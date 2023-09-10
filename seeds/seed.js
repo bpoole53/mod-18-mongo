@@ -7,8 +7,8 @@ const userData = require('./userData.json');
 const thoughtData = require('./thoughtData.json');
 
 db.once('open', async () => {
-    await dbWipe('User', 'users');
     // await dbWipe('Thought', 'thoughts');
+    await dbWipe('User', 'users');    
   
     await User.insertMany(userData);
     console.log('Users have been seeded');

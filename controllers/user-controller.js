@@ -35,7 +35,7 @@ module.exports = {
       console.log(err)
     }
   },
-
+  // find and update a user
   async updateUser(req, res) {
     try {
       const userId = req.params.userId
@@ -49,17 +49,14 @@ module.exports = {
       console.log(err)
     }
   },
-
+  //find and remove a user
   async removeUser(req, res) {
     try {
       const user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
-        return res.status(404).json({ message: 'No user with that ID' });
+        return res.status(404).json({ message: 'User has been removed' });
       }
-
-    //   await Application.deleteMany({ _id: { $in: user.applications } });
-    //   res.json({ message: 'User and associated apps deleted!' })
     } catch (err) {
       res.status(500).json(err);
     }

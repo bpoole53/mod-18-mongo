@@ -30,10 +30,14 @@ module.exports = {
   // add a thought
   async addThought(req, res) {
     try {
-      const {userId} = req.body;  
-      const thought = await Thought.insertMany(req.body, {ordered: false});
-      
-      const user = await User.findByIdAndUpdate(userId, { $push: { thoughts: thought._id } });
+       
+      const thought = await Thought.insertMany(req.body);
+
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { thoughts: thought._id } },
+        { new: true }
+      );
       res.json({thought, user});
     } catch (err) {
       res.status(500).json(err);
@@ -69,13 +73,37 @@ module.exports = {
   //add a reaction to a thought
   async addReaction(req, res) {
     try {
-      const {thoughtId} = req.body;  
-      const thought = await Thought.findByIdAndUpdate(thoughtId, { $push: { reactions: reactionSchema._id } });
-      
-      res.json(thought);
-    } catch (err) {
-      res.status(500).json(err);
-      console.log(err)
-    }  
+        const reaction = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $addToSet: { reactions: req.body } },
+          { new: true, runValidators: true }
+        );
+  
+        if (!reaction) {
+          return res.status(404).json({ message: 'No such thought exists' });
+        }
+  
+        res.json(reaction);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+  },  
+  //remove a reaction
+async removeReaction(req, res) {
+    try {
+        const reaction = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $pull: { reactions: {reactionId: req.params.reactionId}}},
+          { new: true, runValidators: true }
+        );
+  
+        if (!reaction) {
+          return res.status(404).json({ message: 'No such thought exists' });
+        }
+  
+        res.json(reaction);
+      } catch (err) {
+        res.status(500).json(err);
+      }
   },  
 }
