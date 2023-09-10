@@ -55,7 +55,9 @@ module.exports = {
       const user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
-        return res.status(404).json({ message: 'User has been removed' });
+        return res.status(404).json({ message: 'No such user exists' });
+      } else {
+        res.json({ message: 'User has been removed'})
       }
     } catch (err) {
       res.status(500).json(err);

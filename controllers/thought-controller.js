@@ -64,7 +64,9 @@ module.exports = {
       const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
 
       if (!thought) {
-        return res.status(404).json({ message: 'Thought has been removed' });
+        return res.status(404).json({ message: 'No such thought exists' });
+      } else {
+        res.json({ message: 'Thought has been removed'})
       }
     } catch (err) {
       res.status(500).json(err);
@@ -98,7 +100,9 @@ async removeReaction(req, res) {
         );
   
         if (!reaction) {
-          return res.status(404).json({ message: 'No such thought exists' });
+          return res.status(404).json({ message: 'No such reaction exists' });
+        } else {
+          res.json({ message: 'Reaction has been removed'})
         }
   
         res.json(reaction);
